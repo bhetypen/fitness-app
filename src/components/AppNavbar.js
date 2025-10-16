@@ -16,7 +16,7 @@ export default function AppNavbar() {
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
-                <Navbar.Brand as={Link} to="/">FitnessApp</Navbar.Brand>
+                <Navbar.Brand as={Link} to={user?.id ? "/workouts" : "/login"}>FitnessApp</Navbar.Brand>
                 <Navbar.Toggle aria-controls="main-navbar" />
                 <Navbar.Collapse id="main-navbar">
                     <Nav className="ms-auto">
