@@ -45,7 +45,7 @@ function App() {
     }, []);
 
     return (
-        <UserProvider value={{user, setUser, unsetUser, notyf}}>
+        <UserProvider value={{user, setUser, unsetUser, notyf, authReady}}>
             <Router>
                 <AppNavbar bg="dark" variant="dark" expand="lg"></AppNavbar>
                 <Container>
