@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import {Form, Button, Container} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import userContext from "../UserContext";
 
@@ -68,43 +68,47 @@ export default function Register() {
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <h1 className="my-5 text-center">Register</h1>
+        <Container fluid className="d-flex justify-content-center align-items-center vh-100">
+            <div className="p-4 shadow bg-white rounded" style={{maxWidth: "480px", width: "100%"}}>
+                <Form onSubmit={handleSubmit}>
+                    <h1 className="my-5 text-center">Register</h1>
 
-            <Form.Group controlId="registerEmail" className="mb-3">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                    type="email"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </Form.Group>
+                    <Form.Group controlId="registerEmail" className="mb-3">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control
+                            type="email"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
 
-            <Form.Group controlId="registerPassword" className="mb-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                    type="password"
-                    placeholder="At least 8 characters"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </Form.Group>
+                    <Form.Group controlId="registerPassword" className="mb-3">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="At least 8 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
 
-            <Form.Group controlId="registerConfirm" className="mb-4">
-                <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                    type="password"
-                    placeholder="Re-enter your password"
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    required
-                />
-            </Form.Group>
+                    <Form.Group controlId="registerConfirm" className="mb-4">
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Re-enter your password"
+                            value={confirm}
+                            onChange={(e) => setConfirm(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
 
-            <Button variant="primary" type="submit">Create Account</Button>
-        </Form>
+                    <Button variant="primary" type="submit">Create Account</Button>
+                </Form>
+            </div>
+        </Container>
     );
 }

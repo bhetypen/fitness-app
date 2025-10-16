@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { Notyf } from 'notyf';
+import {useState, useEffect, useContext} from 'react';
+import {Form, Button, Container} from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
+import {Notyf} from 'notyf';
 import UserContext from '../UserContext';
 
 export default function Login() {
@@ -10,7 +10,7 @@ export default function Login() {
     const notyf = new Notyf();
 
 
-    const { user, setUser } = useContext(UserContext);
+    const {user, setUser} = useContext(UserContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -21,7 +21,7 @@ export default function Login() {
     function authenticate(e) {
 
         e.preventDefault();
-        fetch('https://fitnessapp-api-ln8u.onrender.com/users/login',{
+        fetch('https://fitnessapp-api-ln8u.onrender.com/users/login', {
 
             method: 'POST',
             headers: {
@@ -37,7 +37,7 @@ export default function Login() {
             .then(res => res.json())
             .then(data => {
 
-                if(data.access !== undefined){
+                if (data.access !== undefined) {
 
                     console.log(data.access);
 
@@ -47,7 +47,7 @@ export default function Login() {
                     notyf.success('Successful Login');
                     navigate('/workouts')
 
-                } else if(data.message == "Incorrect email or password") {
+                } else if (data.message == "Incorrect email or password") {
                     notyf.error("Incorrect Credentials. Try Again.");
                 } else {
                     notyf.error('User Not Found. Try Again.');
@@ -65,7 +65,7 @@ export default function Login() {
 
         fetch('https://fitnessapp-api-ln8u.onrender.com/users/details', {
             headers: {
-                Authorization: `Bearer ${ token }`
+                Authorization: `Bearer ${token}`
             }
         })
             .then(res => res.json())
@@ -85,9 +85,9 @@ export default function Login() {
     useEffect(() => {
 
         // Validation to enable submit button when all fields are populated and both passwords match
-        if(email !== '' && password !== ''){
+        if (email !== '' && password !== '') {
             setIsActive(true);
-        }else{
+        } else {
             setIsActive(false);
         }
 
@@ -100,39 +100,43 @@ export default function Login() {
 
         // 	:
 
-        <Form onSubmit={(e) => authenticate(e)}>
-            <h1 className="my-5 text-center">Login</h1>
-            <Form.Group controlId="userEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                    type="text"
-                    placeholder="Enter email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </Form.Group>
+        <Container fluid className="d-flex justify-content-center align-items-center vh-100">
+            <div className="p-4 shadow bg-white rounded" style={{maxWidth: "480px", width: "100%"}}>
+                <Form onSubmit={(e) => authenticate(e)}>
+                    <h1 className="my-5 text-center">Login</h1>
+                    <Form.Group controlId="userEmail" className="mb-3">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
 
-            <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </Form.Group>
+                    <Form.Group controlId="password" className="mb-3">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
 
-            { isActive ?
-                <Button variant="primary" type="submit" id="submitBtn">
-                    Submit
-                </Button>
-                :
-                <Button variant="danger" type="submit" id="submitBtn" disabled>
-                    Submit
-                </Button>
-            }
-        </Form>
+                    {isActive ?
+                        <Button variant="primary" type="submit" id="submitBtn">
+                            Submit
+                        </Button>
+                        :
+                        <Button variant="danger" type="submit" id="submitBtn" disabled>
+                            Submit
+                        </Button>
+                    }
+                </Form>
+            </div>
+        </Container>
     )
 }
