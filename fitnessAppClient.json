@@ -1,5 +1,5 @@
 {
-  "url": "",
+  "url": "https://vercel.com/bhety-ps-projects/fitness-app",
   "endpoints": {
     "register": "/register",
     "login": "/login",
