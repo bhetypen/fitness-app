@@ -106,7 +106,7 @@ export default function Register() {
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">Create Account</Button>
+                    <Button className="w-100" variant="primary" type="submit">Create Account</Button>
                 </Form>
             </div>
         </Container>

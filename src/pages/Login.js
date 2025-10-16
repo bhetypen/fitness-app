@@ -1,85 +1,74 @@
 import {useState, useEffect, useContext} from 'react';
 import {Form, Button, Container} from 'react-bootstrap';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import {Notyf} from 'notyf';
 import UserContext from '../UserContext';
 
 export default function Login() {
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const notyf = new Notyf();
+    const from = location.state?.from?.pathname || '/workouts'
 
 
-    const {user, setUser} = useContext(UserContext);
+
+
+    const {setUser, notyf} = useContext(UserContext);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const [isActive, setIsActive] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+
+    useEffect(() => setIsActive(email !== '' && password !== ''), [email, password]);
 
 
-    function authenticate(e) {
-
+    const authenticate = async (e) => {
         e.preventDefault();
-        fetch('https://fitnessapp-api-ln8u.onrender.com/users/login', {
+        if (submitting) return;
+        setSubmitting(true);
 
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+        try {
+            const res = await fetch('https://fitnessapp-api-ln8u.onrender.com/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
 
-                email: email,
-                password: password
-
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-
-                if (data.access !== undefined) {
-
-                    console.log(data.access);
-
-                    localStorage.setItem('token', data.access);
-                    retrieveUserDetails(data.access);
-
-                    notyf.success('Successful Login');
-                    navigate('/workouts')
-
-                } else if (data.message == "Incorrect email or password") {
-                    notyf.error("Incorrect Credentials. Try Again.");
-                } else {
-                    notyf.error('User Not Found. Try Again.');
-                }
-            })
-
-        setEmail('');
-        setPassword('');
-
-
-    }
-
-
-    const retrieveUserDetails = (token) => {
-
-        fetch('https://fitnessapp-api-ln8u.onrender.com/users/details', {
-            headers: {
-                Authorization: `Bearer ${token}`
+            if (!res.ok || !data.access) {
+                const msg = data.message === 'Incorrect email or password'
+                    ? 'Incorrect Credentials. Try Again.'
+                    : (data.message || 'Login failed');
+                notyf.error(msg);
+                return;
             }
-        })
-            .then(res => res.json())
-            .then(data => {
 
-                console.log(data);
-                console.log(data.user._id);
+            localStorage.setItem('token', data.access);
+            await retrieveUserDetails(data.access);     // <-- wait until user is set
+            notyf.success('Successful Login');
+            navigate(from, { replace: true });          // <-- go to intended route
+        } catch {
+            notyf.error('Network error. Please try again.');
+        } finally {
+            setSubmitting(false);
+            setEmail('');
+            setPassword('');
+        }
+    };
 
-                setUser({
-                    id: data.user._id,
-                });
 
-            })
-
+    const retrieveUserDetails = async (token) => {
+        const res = await fetch('https://fitnessapp-api-ln8u.onrender.com/users/details', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data?.user?._id) {
+            setUser({ id: data.user._id });
+        } else {
+            setUser({ id: null });
+        }
     };
 
     useEffect(() => {
@@ -125,16 +114,9 @@ export default function Login() {
                             required
                         />
                     </Form.Group>
-
-                    {isActive ?
-                        <Button variant="primary" type="submit" id="submitBtn">
-                            Submit
-                        </Button>
-                        :
-                        <Button variant="danger" type="submit" id="submitBtn" disabled>
-                            Submit
-                        </Button>
-                    }
+                    <Button type="submit" className="w-100"  variant="primary" disabled={!isActive || submitting}>
+                        {submitting ? 'Signing in…' : 'Submit'}
+                    </Button>
                 </Form>
             </div>
         </Container>
